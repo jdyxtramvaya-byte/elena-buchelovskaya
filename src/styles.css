@@ -102,3 +102,39 @@ a:focus:not(:focus-visible),
   color: #f5e9d5;
   background: rgba(197,164,109,.32);
 }
+
+
+/* Interaction polish: touch, keyboard focus and small-screen controls */
+button, a, select, input, textarea {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button, .service-row, .daily-card, .menu-toggle, .language {
+  -webkit-user-select: none;
+  user-select: none;
+}
+button:focus { outline: none; }
+button:focus-visible, a:focus-visible, select:focus-visible,
+input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--gold2);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(197,164,109,.12);
+}
+@media (hover: hover) and (pointer: fine) {
+  .service-row:hover .service-title { color: var(--gold2); }
+  .service-row:hover .service-arrow { transform: translate(3px,-3px); }
+  .service-arrow { transition: transform .3s var(--ease-gentle); }
+  .text-link:hover, .underlined-link:hover { color: #f1dfbd; }
+}
+@media (max-width: 680px) {
+  .header-actions { gap: 10px; }
+  .nav { max-height: calc(100dvh - 100px); overflow-y: auto; }
+  .booking-modal { max-height: min(88dvh, 760px); overscroll-behavior: contain; }
+  .booking-modal form { gap: 13px; }
+  .booking-modal input, .booking-modal select, .booking-modal textarea {
+    min-height: 46px;
+    font-size: 16px;
+  }
+  .booking-modal textarea { min-height: 92px; }
+  .button, .language, .menu-toggle { min-height: 44px; }
+}
