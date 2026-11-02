@@ -230,7 +230,10 @@ function App() {
           <div className="daily-copy"><div className="section-kicker"><span>04</span><span>{t.dailyLabel}</span></div><h2>{t.dailyTitle}</h2><p>{t.dailyText}</p><div className="daily-date">{new Intl.DateTimeFormat(lang === 'ru' ? 'ru-RU' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}</div></div>
           <div className="daily-interaction">
             <button className={revealed ? 'daily-card revealed' : 'daily-card'} onClick={() => setRevealed(true)} aria-label={t.reveal}>
-              <span className="daily-card-inner"><span className="daily-card-border"><span className="daily-card-top">✧　✦　✧</span><span className="daily-card-symbol">{revealed ? symbols[cardIndex % symbols.length] : '☾'}</span><span className="daily-card-center">{revealed ? activeCard[0] : 'ELENA · TAROT'}</span><span className="daily-card-bottom">✦　☼　✦</span></span></span>
+              <span className="daily-card-inner">
+                <span className="daily-card-face daily-card-front"><span className="daily-card-border"><span className="daily-card-top">✧　✦　✧</span><span className="daily-card-symbol">☾</span><span className="daily-card-center">ELENA · TAROT</span><span className="daily-card-bottom">✦　☼　✦</span></span></span>
+                <span className="daily-card-face daily-card-back"><span className="daily-card-border"><span className="daily-card-top">✧　✦　✧</span><span className="daily-card-symbol">{symbols[cardIndex % symbols.length]}</span><span className="daily-card-center">{activeCard[0]}</span><span className="daily-card-bottom">✦　☼　✦</span></span></span>
+              </span>
             </button>
             {revealed ? <div className="card-reading"><span className="reading-label">{lang === 'ru' ? 'ВАША КАРТА' : 'YOUR CARD'}</span><h3>{activeCard[0]}</h3><p>{activeCard[1]}</p><button className="underlined-link" onClick={() => { setCardIndex((cardIndex + 1) % t.cards.length); setRevealed(true) }}>{t.again}<ArrowUpRight size={15}/></button></div> : <button className="button" onClick={() => { setCardIndex(todayIndex); setRevealed(true) }}>{t.reveal}<Sparkles size={15}/></button>}
           </div>
