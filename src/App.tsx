@@ -132,7 +132,8 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [cardIndex, setCardIndex] = useState(0)
-  const [form, setForm] = useState({ name: '', contact: '', topic: 'Отношения и любовь', format: 'Онлайн', message: '' })
+  const [form, setForm] = useState({ name: '', contact: '', topicIndex: 0, format: 'online' as 'online' | 'offline', message: '' })
+  const [formFeedback, setFormFeedback] = useState('')
   const t = copy[lang]
   const todayIndex = useMemo(() => {
     const now = new Date()
@@ -143,7 +144,11 @@ function App() {
   const activeCard = t.cards[cardIndex]
 
   const openBooking = (topic?: string) => {
-    if (topic) setForm(current => ({ ...current, topic }))
+    if (topic) {
+      const topicIndex = t.items.findIndex(item => item[1] === topic)
+      if (topicIndex >= 0) setForm(current => ({ ...current, topicIndex }))
+    }
+    setFormFeedback('')
     setModalOpen(true)
     setMenuOpen(false)
   }
@@ -153,16 +158,29 @@ function App() {
     setMenuOpen(false)
   }
 
-  const prepareEnquiry = () => {
-    const body = [
+  const prepareEnquiry = async () => {
+    const body = lang === 'ru' ? [
       'Заявка на консультацию Елены Бучеловской',
       `Имя: ${form.name}`,
       `Контакт: ${form.contact}`,
-      `Направление: ${form.topic}`,
-      `Формат: ${form.format}`,
-      `Вопрос: ${form.message}`,
+      `Направление: ${t.items[form.topicIndex][1]}`,
+      `Формат: ${form.format === 'online' ? t.online : t.offline}`,
+      `Вопрос: ${form.message || 'Не указан'}`,
+    ].join('\n') : [
+      'Consultation enquiry — Elena Buchelovskaya',
+      `Name: ${form.name}`,
+      `Contact: ${form.contact}`,
+      `Topic: ${t.items[form.topicIndex][1]}`,
+      `Format: ${form.format === 'online' ? t.online : t.offline}`,
+      `Question: ${form.message || 'Not provided'}`,
     ].join('\n')
-    void navigator.clipboard?.writeText(body)
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(body)
+      setFormFeedback(lang === 'ru' ? 'Заявка скопирована. Отправьте её Елене удобным способом связи.' : 'Enquiry copied. Send it to Elena using your preferred contact method.')
+    } catch {
+      setFormFeedback(lang === 'ru' ? 'Не удалось скопировать автоматически. Попробуйте открыть сайт в браузере с разрешённым доступом к буферу обмена.' : 'Could not copy automatically. Open the site in a browser that allows clipboard access.')
+    }
   }
 
   return (
@@ -258,7 +276,7 @@ function App() {
         <p className="disclaimer">{t.privacy}</p>
       </footer>
 
-      {modalOpen && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setModalOpen(false) }}><div className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button className="modal-close" onClick={() => setModalOpen(false)} aria-label={t.close}><X/></button><div className="section-kicker"><span>✳</span><span>ELENA BUCHELOVSKAYA</span></div><h2 id="modal-title">{t.modalTitle}</h2><form onSubmit={e => { e.preventDefault(); prepareEnquiry() }}><label>{t.name}<input required value={form.name} onChange={e => setForm({...form, name:e.target.value})}/></label><label>{t.contact}<input required value={form.contact} onChange={e => setForm({...form, contact:e.target.value})} placeholder="@username / phone"/></label><label>{t.topic}<select value={form.topic} onChange={e => setForm({...form, topic:e.target.value})}>{t.items.map(item => <option key={item[0]}>{item[1]}</option>)}</select></label><label>{t.format}<select value={form.format} onChange={e => setForm({...form, format:e.target.value})}><option>{t.online}</option><option>{t.offline}</option></select></label><label>{t.message}<textarea rows={3} value={form.message} onChange={e => setForm({...form, message:e.target.value})}/></label><button className="button modal-submit" type="submit">{t.send}<ArrowUpRight size={15}/></button><p className="form-notice">{t.notice}</p></form></div></div>}
+      {modalOpen && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setModalOpen(false) }}><div className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button className="modal-close" onClick={() => setModalOpen(false)} aria-label={t.close}><X/></button><div className="section-kicker"><span>✳</span><span>ELENA BUCHELOVSKAYA</span></div><h2 id="modal-title">{t.modalTitle}</h2><form onSubmit={e => { e.preventDefault(); prepareEnquiry() }}><label>{t.name}<input required value={form.name} onChange={e => setForm({...form, name:e.target.value})}/></label><label>{t.contact}<input required value={form.contact} onChange={e => setForm({...form, contact:e.target.value})} placeholder="@username / phone"/></label><label>{t.topic}<select value={String(form.topicIndex)} onChange={e => setForm({...form, topicIndex:Number(e.target.value)})}>{t.items.map((item, index) => <option key={item[0]} value={index}>{item[1]}</option>)}</select></label><label>{t.format}<select value={form.format} onChange={e => setForm({...form, format:e.target.value as 'online' | 'offline'})}><option value="online">{t.online}</option><option value="offline">{t.offline}</option></select></label><label>{t.message}<textarea rows={3} value={form.message} onChange={e => setForm({...form, message:e.target.value})}/></label><button className="button modal-submit" type="submit">{t.send}<ArrowUpRight size={15}/></button><p className="form-notice" aria-live="polite">{formFeedback || t.notice}</p></form></div></div>}
     </div>
   )
 }
