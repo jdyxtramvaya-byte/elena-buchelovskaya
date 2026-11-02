@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jdyxtramvaya-byte.github.io/elena-buchelovskaya/sitemap.xml
