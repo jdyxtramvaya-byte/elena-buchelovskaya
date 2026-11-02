@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ArrowDown, ArrowUpRight, BookOpen, Check, ChevronDown, Languages, Menu, MessageCircle, Search, Sparkles, Star, X } from 'lucide-react'
 import { tarotDeck, type TarotCard } from './data/tarot'
 
@@ -147,6 +147,23 @@ function App() {
     const day = Math.floor((now.getTime() - start.getTime()) / 86400000)
     return day % t.cards.length
   }, [t.cards])
+  useEffect(() => {
+    if (!modalOpen && !selectedCard) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setModalOpen(false)
+        setSelectedCard(null)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [modalOpen, selectedCard])
+
   const activeCard = t.cards[cardIndex]
   const filteredDeck = useMemo(() => tarotDeck.filter(card => {
     const matchesQuery = `${card.name.ru} ${card.name.en} ${card.suit || ''}`.toLowerCase().includes(libraryQuery.trim().toLowerCase())
@@ -307,7 +324,7 @@ function App() {
           <div className="section-kicker"><span>06</span><span>{lang === 'ru' ? 'ЭНЦИКЛОПЕДИЯ ТАРО' : 'TAROT ENCYCLOPEDIA'}</span></div>
           <div className="section-heading"><div><h2>{lang === 'ru' ? 'Все 78 карт колоды' : 'All 78 cards'}</h2><p>{lang === 'ru' ? 'Изучите символику, прямые и перевёрнутые значения Старших и Младших арканов.' : 'Explore the symbolism and upright or reversed meanings of the Major and Minor Arcana.'}</p></div><BookOpen className="section-mark"/></div>
           <div className="library-tools">
-            <label className="library-search"><Search size={17}/><input value={libraryQuery} onChange={event => setLibraryQuery(event.target.value)} placeholder={lang === 'ru' ? 'Найти карту…' : 'Search cards…'} /></label>
+            <label className="library-search"><Search size={17}/><input value={libraryQuery} onChange={event => setLibraryQuery(event.target.value)} aria-label={lang === 'ru' ? 'Поиск по картам Таро' : 'Search tarot cards'} placeholder={lang === 'ru' ? 'Найти карту…' : 'Search cards…'} /></label>
             <div className="library-filters" role="group" aria-label={lang === 'ru' ? 'Фильтр карт' : 'Card filter'}>
               {(['all', 'major', 'minor'] as const).map(filter => <button key={filter} className={libraryFilter === filter ? 'active' : ''} onClick={() => setLibraryFilter(filter)}>{lang === 'ru' ? (filter === 'all' ? 'Все карты' : filter === 'major' ? 'Старшие арканы' : 'Младшие арканы') : (filter === 'all' ? 'All cards' : filter === 'major' ? 'Major Arcana' : 'Minor Arcana')}</button>)}
             </div>
@@ -322,13 +339,13 @@ function App() {
         </section>
 
         <section className="reviews-section section-wrap" id="reviews">
-          <div className="section-kicker"><span>05</span><span>{t.reviewsLabel}</span></div>
+          <div className="section-kicker"><span>07</span><span>{t.reviewsLabel}</span></div>
           <div className="reviews-content"><span className="quote-mark">“</span><h2>{t.reviewsTitle}</h2><p>{t.reviewsText}</p><div className="review-placeholder"><span><Star/><Star/><Star/><Star/><Star/></span><small>{lang === 'ru' ? 'МЕСТО ДЛЯ РЕАЛЬНЫХ ОТЗЫВОВ' : 'SPACE FOR VERIFIED TESTIMONIALS'}</small></div></div>
         </section>
 
         <section className="booking-section" id="booking">
           <div className="booking-glow"/>
-          <div className="booking-inner"><div className="section-kicker"><span>06</span><span>{t.bookingLabel}</span></div><h2>{t.bookingTitle}</h2><p>{t.bookingText}</p><button className="button button-light" onClick={() => openBooking()}>{t.bookCta}<ArrowUpRight size={16}/></button></div>
+          <div className="booking-inner"><div className="section-kicker"><span>08</span><span>{t.bookingLabel}</span></div><h2>{t.bookingTitle}</h2><p>{t.bookingText}</p><button className="button button-light" onClick={() => openBooking()}>{t.bookCta}<ArrowUpRight size={16}/></button></div>
           <div className="booking-deco">✳</div>
         </section>
       </main>
