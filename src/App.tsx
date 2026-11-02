@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
-import { ArrowDown, ArrowUpRight, Check, ChevronDown, Languages, Menu, MessageCircle, Sparkles, Star, X } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, BookOpen, Check, ChevronDown, Languages, Menu, MessageCircle, Search, Sparkles, Star, X } from 'lucide-react'
 import { tarotDeck, type TarotCard } from './data/tarot'
 
 type Lang = 'ru' | 'en'
 
 const copy = {
   ru: {
-    nav: ['Обо мне', 'Консультации', 'Карта дня', 'Расклады', 'Отзывы'],
+    nav: ['Обо мне', 'Консультации', 'Карта дня', 'Расклады', 'Карты Таро', 'Отзывы'],
     book: 'Записаться',
     eyebrow: 'ТАРО · ИНДИВИДУАЛЬНЫЕ КОНСУЛЬТАЦИИ',
     title: 'Посмотрите на свою ситуацию\nпод новым углом.',
@@ -65,7 +65,7 @@ const copy = {
     ],
   },
   en: {
-    nav: ['About', 'Consultations', 'Card of the day', 'Readings', 'Reviews'],
+    nav: ['About', 'Consultations', 'Card of the day', 'Readings', 'Tarot library', 'Reviews'],
     book: 'Book a session',
     eyebrow: 'TAROT · PERSONAL CONSULTATIONS',
     title: 'See your situation\nfrom a new perspective.',
@@ -137,6 +137,9 @@ function App() {
   const [spreadCards, setSpreadCards] = useState<{ card: TarotCard; reversed: boolean }[]>([])
   const [form, setForm] = useState({ name: '', contact: '', topicIndex: 0, format: 'online' as 'online' | 'offline', message: '' })
   const [formFeedback, setFormFeedback] = useState('')
+  const [libraryQuery, setLibraryQuery] = useState('')
+  const [libraryFilter, setLibraryFilter] = useState<'all' | 'major' | 'minor'>('all')
+  const [selectedCard, setSelectedCard] = useState<TarotCard | null>(null)
   const t = copy[lang]
   const todayIndex = useMemo(() => {
     const now = new Date()
@@ -145,6 +148,10 @@ function App() {
     return day % t.cards.length
   }, [t.cards])
   const activeCard = t.cards[cardIndex]
+  const filteredDeck = useMemo(() => tarotDeck.filter(card => {
+    const matchesQuery = `${card.name.ru} ${card.name.en} ${card.suit || ''}`.toLowerCase().includes(libraryQuery.trim().toLowerCase())
+    return matchesQuery && (libraryFilter === 'all' || card.arcana === libraryFilter)
+  }), [libraryQuery, libraryFilter])
 
   const drawSpread = () => {
     const pool = [...tarotDeck]
@@ -152,7 +159,7 @@ function App() {
       const j = Math.floor(Math.random() * (i + 1))
       ;[pool[i], pool[j]] = [pool[j], pool[i]]
     }
-    setSpreadCards(pool.slice(0, spreadSize).map(card => ({ card, reversed: Math.random() < 0.0 ? true : Math.random() < 0.5 })))
+    setSpreadCards(pool.slice(0, spreadSize).map(card => ({ card, reversed: Math.random() < 0.5 })))
   }
 
   const openBooking = (topic?: string) => {
@@ -203,7 +210,7 @@ function App() {
           <span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small>
         </a>
         <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
-          {t.nav.map((item, i) => <button key={item} onClick={() => scrollTo(['about', 'services', 'daily', 'spreads', 'reviews'][i])}>{item}</button>)}
+          {t.nav.map((item, i) => <button key={item} onClick={() => scrollTo(['about', 'services', 'daily', 'spreads', 'library', 'reviews'][i])}>{item}</button>)}
         </nav>
         <div className="header-actions">
           <button className="language" onClick={() => setLang(lang === 'ru' ? 'en' : 'ru')} aria-label="Switch language"><Languages size={15}/>{lang.toUpperCase()}</button>
@@ -296,6 +303,24 @@ function App() {
           <p className="spread-disclaimer">{lang === 'ru' ? 'Трактовки носят символический характер и предназначены для саморефлексии. Они не предсказывают события и не заменяют профессиональную консультацию.' : 'Interpretations are symbolic prompts for self-reflection. They do not predict events or replace professional advice.'}</p>
         </section>
 
+        <section className="library-section section-wrap" id="library">
+          <div className="section-kicker"><span>06</span><span>{lang === 'ru' ? 'ЭНЦИКЛОПЕДИЯ ТАРО' : 'TAROT ENCYCLOPEDIA'}</span></div>
+          <div className="section-heading"><div><h2>{lang === 'ru' ? 'Все 78 карт колоды' : 'All 78 cards'}</h2><p>{lang === 'ru' ? 'Изучите символику, прямые и перевёрнутые значения Старших и Младших арканов.' : 'Explore the symbolism and upright or reversed meanings of the Major and Minor Arcana.'}</p></div><BookOpen className="section-mark"/></div>
+          <div className="library-tools">
+            <label className="library-search"><Search size={17}/><input value={libraryQuery} onChange={event => setLibraryQuery(event.target.value)} placeholder={lang === 'ru' ? 'Найти карту…' : 'Search cards…'} /></label>
+            <div className="library-filters" role="group" aria-label={lang === 'ru' ? 'Фильтр карт' : 'Card filter'}>
+              {(['all', 'major', 'minor'] as const).map(filter => <button key={filter} className={libraryFilter === filter ? 'active' : ''} onClick={() => setLibraryFilter(filter)}>{lang === 'ru' ? (filter === 'all' ? 'Все карты' : filter === 'major' ? 'Старшие арканы' : 'Младшие арканы') : (filter === 'all' ? 'All cards' : filter === 'major' ? 'Major Arcana' : 'Minor Arcana')}</button>)}
+            </div>
+          </div>
+          <div className="library-count">{lang === 'ru' ? 'Найдено карт' : 'Cards found'} · {filteredDeck.length} / 78</div>
+          <div className="library-grid">
+            {filteredDeck.map(card => <button className="library-card" key={card.id} onClick={() => setSelectedCard(card)}>
+              <span className="library-card-symbol">{card.symbol}</span><span className="library-card-name">{card.name[lang]}</span><small>{card.arcana === 'major' ? (lang === 'ru' ? 'СТАРШИЙ АРКАН' : 'MAJOR ARCANA') : (lang === 'ru' ? 'МЛАДШИЙ АРКАН' : 'MINOR ARCANA')}</small><span className="library-card-open"><ArrowUpRight size={15}/></span>
+            </button>)}
+            {filteredDeck.length === 0 && <p className="library-empty">{lang === 'ru' ? 'Карты не найдены. Попробуйте изменить запрос.' : 'No cards found. Try another search.'}</p>}
+          </div>
+        </section>
+
         <section className="reviews-section section-wrap" id="reviews">
           <div className="section-kicker"><span>05</span><span>{t.reviewsLabel}</span></div>
           <div className="reviews-content"><span className="quote-mark">“</span><h2>{t.reviewsTitle}</h2><p>{t.reviewsText}</p><div className="review-placeholder"><span><Star/><Star/><Star/><Star/><Star/></span><small>{lang === 'ru' ? 'МЕСТО ДЛЯ РЕАЛЬНЫХ ОТЗЫВОВ' : 'SPACE FOR VERIFIED TESTIMONIALS'}</small></div></div>
@@ -315,6 +340,7 @@ function App() {
         <p className="disclaimer">{t.privacy}</p>
       </footer>
 
+      {selectedCard && <div className="modal-backdrop library-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setSelectedCard(null) }}><div className="library-modal" role="dialog" aria-modal="true" aria-labelledby="library-modal-title"><button className="modal-close" onClick={() => setSelectedCard(null)} aria-label={lang === 'ru' ? 'Закрыть' : 'Close'}><X/></button><div className="library-modal-art"><span>{selectedCard.symbol}</span><small>{selectedCard.arcana === 'major' ? 'MAJOR ARCANA' : 'MINOR ARCANA'}</small></div><div className="library-modal-copy"><div className="section-kicker"><span>✧</span><span>{lang === 'ru' ? 'ЗНАЧЕНИЕ КАРТЫ' : 'CARD MEANING'}</span></div><h2 id="library-modal-title">{selectedCard.name[lang]}</h2><h3>{lang === 'ru' ? 'Прямое положение' : 'Upright position'}</h3><p>{selectedCard.upright[lang]}</p><h3>{lang === 'ru' ? 'Перевёрнутое положение' : 'Reversed position'}</h3><p>{selectedCard.reversed[lang]}</p><button className="button" onClick={() => { setSelectedCard(null); openBooking() }}>{lang === 'ru' ? 'Обсудить карту на консультации' : 'Discuss this card in a session'}<ArrowUpRight size={15}/></button></div></div></div>}
       {modalOpen && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setModalOpen(false) }}><div className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button className="modal-close" onClick={() => setModalOpen(false)} aria-label={t.close}><X/></button><div className="section-kicker"><span>✳</span><span>ELENA BUCHELOVSKAYA</span></div><h2 id="modal-title">{t.modalTitle}</h2><form onSubmit={e => { e.preventDefault(); prepareEnquiry() }}><label>{t.name}<input required value={form.name} onChange={e => setForm({...form, name:e.target.value})}/></label><label>{t.contact}<input required value={form.contact} onChange={e => setForm({...form, contact:e.target.value})} placeholder="@username / phone"/></label><label>{t.topic}<select value={String(form.topicIndex)} onChange={e => setForm({...form, topicIndex:Number(e.target.value)})}>{t.items.map((item, index) => <option key={item[0]} value={index}>{item[1]}</option>)}</select></label><label>{t.format}<select value={form.format} onChange={e => setForm({...form, format:e.target.value as 'online' | 'offline'})}><option value="online">{t.online}</option><option value="offline">{t.offline}</option></select></label><label>{t.message}<textarea rows={3} value={form.message} onChange={e => setForm({...form, message:e.target.value})}/></label><button className="button modal-submit" type="submit">{t.send}<ArrowUpRight size={15}/></button><p className="form-notice" aria-live="polite">{formFeedback || t.notice}</p></form></div></div>}
     </div>
   )
