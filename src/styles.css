@@ -467,3 +467,35 @@ button { -webkit-appearance: none; appearance: none; }
  .reading-promo{grid-template-columns:1fr;padding:65px 7%;gap:35px}.reading-promo-art{width:190px}.reading-promo-art i{font-size:90px}.reading-promo-copy h2{font-size:45px}.reading-promo-copy .button{width:100%;justify-content:space-between}.readings-footer{padding-left:7%;padding-right:7%}
 }
 @media(prefers-reduced-motion:reduce){.reading-card-result{animation:none}.reading-card-back,.reading-card-front{transition:none}}
+
+
+/* Tarot library */
+.library-section{padding-top:100px;padding-bottom:105px;border-top:1px solid rgba(197,164,109,.12)}
+.library-tools{display:grid;grid-template-columns:minmax(220px,.8fr) 1.2fr;gap:18px;align-items:center;margin:30px 0 15px}
+.library-search{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:52px;border:1px solid rgba(235,220,198,.15);border-radius:12px;background:rgba(255,255,255,.025);color:#c5a46d}
+.library-search input{width:100%;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:12px}
+.library-search input::placeholder{color:#897c74}
+.library-filters{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.library-filters button{padding:12px 15px;border:1px solid rgba(235,220,198,.14);border-radius:999px;background:transparent;color:var(--muted);font:inherit;font-size:10px;cursor:pointer;transition:.25s}
+.library-filters button.active,.library-filters button:hover{border-color:rgba(197,164,109,.5);background:rgba(197,164,109,.1);color:#e4c895}
+.library-count{margin-bottom:16px;color:#a89583;font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+.library-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.library-card{position:relative;display:flex;min-height:155px;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;padding:19px;border:1px solid rgba(235,220,198,.12);border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008));color:var(--text);text-align:left;cursor:pointer;transition:transform .25s,border-color .25s,background .25s}
+.library-card:hover{transform:translateY(-3px);border-color:rgba(197,164,109,.45);background:rgba(197,164,109,.07)}
+.library-card-symbol{font-family:var(--serif);font-size:35px;color:#d7b982}
+.library-card-name{font-family:var(--serif);font-size:21px;line-height:1.05}
+.library-card small{font-size:8px;letter-spacing:.13em;color:#9c897d}
+.library-card-open{position:absolute;right:16px;top:17px;color:#b99a67}
+.library-empty{grid-column:1/-1;padding:30px;color:var(--muted);text-align:center}
+.library-backdrop{z-index:10001}
+.library-modal{position:relative;display:grid;grid-template-columns:.7fr 1.3fr;gap:35px;width:min(760px,100%);max-height:90vh;overflow:auto;padding:38px;border:1px solid rgba(197,164,109,.3);border-radius:22px;background:linear-gradient(145deg,#26191c,#120d0f);box-shadow:0 35px 100px rgba(0,0,0,.6)}
+.library-modal-art{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:space-around;border:7px solid #9c794c;outline:1px solid rgba(240,219,181,.5);outline-offset:-15px;border-radius:6px;background:radial-gradient(circle at 50% 40%,#57343b,#201316 70%);color:#e0c18d}
+.library-modal-art span{font-family:var(--serif);font-size:100px}
+.library-modal-art small{font-size:8px;letter-spacing:.2em}
+.library-modal-copy h2{font-family:var(--serif);font-size:42px;font-weight:400;margin:15px 0 25px}
+.library-modal-copy h3{margin:20px 0 8px;color:#d9bd8e;font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+.library-modal-copy p{color:var(--muted);font-size:12px;line-height:1.8}
+.library-modal-copy .button{margin-top:24px}
+@media(max-width:900px){.library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.library-tools{grid-template-columns:1fr}.library-filters{justify-content:flex-start}}
+@media(max-width:600px){.library-section{padding-top:65px;padding-bottom:70px}.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.library-card{min-height:140px;padding:14px}.library-card-name{font-size:18px}.library-modal{grid-template-columns:1fr;gap:22px;padding:25px;max-height:88vh}.library-modal-art{min-height:190px}.library-modal-art span{font-size:70px}.library-modal-copy h2{font-size:34px}.library-filters button{padding:10px 12px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){.library-card{transition:none}.library-card:hover{transform:none}}
