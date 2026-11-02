@@ -24,10 +24,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
+      - name: Verify production build
+        run: |
+          test -s dist/index.html
+          if grep -q 'src="/src/main.tsx"' dist/index.html; then
+            echo "ERROR: source entry was not transformed by Vite"
+            exit 1
+          fi
+          grep -q '/elena-buchelovskaya/assets/' dist/index.html
+          test -d dist/assets
+          echo "Production entry and asset paths verified."
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
