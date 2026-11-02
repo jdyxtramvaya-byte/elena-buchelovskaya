@@ -191,7 +191,7 @@ function App() {
           <span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small>
         </a>
         <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
-          {t.nav.map((item, i) => i === 3 ? <button key={item} onClick={() => { window.location.href = `${import.meta.env.BASE_URL}readings/` }}>{item}<ArrowUpRight size={12}/></button> : <button key={item} onClick={() => scrollTo(['about', 'services', 'daily', '', 'reviews'][i])}>{item}</button>)}
+          {t.nav.map((item, i) => i === 3 ? <button key={item} onClick={() => { window.location.href = `${'/elena-buchelovskaya/'}readings/` }}>{item}<ArrowUpRight size={12}/></button> : <button key={item} onClick={() => scrollTo(['about', 'services', 'daily', '', 'reviews'][i])}>{item}</button>)}
         </nav>
         <div className="header-actions">
           <button className="language" onClick={() => setLang(lang === 'ru' ? 'en' : 'ru')} aria-label="Switch language"><Languages size={15}/>{lang.toUpperCase()}</button>
@@ -264,7 +264,7 @@ function App() {
             <div className="section-kicker"><span>05</span><span>{lang === 'ru' ? 'ИНТЕРАКТИВНОЕ ПРОСТРАНСТВО' : 'INTERACTIVE EXPERIENCE'}</span></div>
             <h2>{lang === 'ru' ? 'Время обратиться к символам.' : 'A moment with the symbols.'}</h2>
             <p>{lang === 'ru' ? 'Выберите расклад, сформулируйте вопрос и откройте карты из полной колоды Таро — 78 арканов с подробными трактовками.' : 'Choose a spread, frame your question and draw from the full 78-card Tarot deck with detailed interpretations.'}</p>
-            <a className="button" href={`${import.meta.env.BASE_URL}readings/`}>{lang === 'ru' ? 'Перейти к раскладам' : 'Explore tarot readings'}<ArrowUpRight size={16}/></a>
+            <a className="button" href={`${'/elena-buchelovskaya/'}readings/`}>{lang === 'ru' ? 'Перейти к раскладам' : 'Explore tarot readings'}<ArrowUpRight size={16}/></a>
           </div>
         </section>
 
