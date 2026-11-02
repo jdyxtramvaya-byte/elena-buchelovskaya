@@ -76,3 +76,29 @@ html{scroll-padding-top:112px}
   .daily-card-symbol{animation:none!important}
   .card-reading{animation:none!important}
 }
+
+
+/* Prevent the browser's default blue tap/selection flash on touch devices. */
+html, body, #root, .site-shell {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, [role="button"], input, select, textarea, label, summary {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+}
+button, a, [role="button"] {
+  -webkit-touch-callout: none;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}
+::selection {
+  color: #f5e9d5;
+  background: rgba(197,164,109,.32);
+}
+::-moz-selection {
+  color: #f5e9d5;
+  background: rgba(197,164,109,.32);
+}
