@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowDown, ArrowUpRight, Check, ChevronDown, Languages, Menu, MessageCircle, Sparkles, Star, X } from 'lucide-react'
+import { tarotDeck, type TarotCard } from './data/tarot'
 
 type Lang = 'ru' | 'en'
 
@@ -132,6 +133,8 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [cardIndex, setCardIndex] = useState(0)
+  const [spreadSize, setSpreadSize] = useState<1 | 3 | 5>(1)
+  const [spreadCards, setSpreadCards] = useState<{ card: TarotCard; reversed: boolean }[]>([])
   const [form, setForm] = useState({ name: '', contact: '', topicIndex: 0, format: 'online' as 'online' | 'offline', message: '' })
   const [formFeedback, setFormFeedback] = useState('')
   const t = copy[lang]
@@ -142,6 +145,15 @@ function App() {
     return day % t.cards.length
   }, [t.cards])
   const activeCard = t.cards[cardIndex]
+
+  const drawSpread = () => {
+    const pool = [...tarotDeck]
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[pool[i], pool[j]] = [pool[j], pool[i]]
+    }
+    setSpreadCards(pool.slice(0, spreadSize).map(card => ({ card, reversed: Math.random() < 0.0 ? true : Math.random() < 0.5 })))
+  }
 
   const openBooking = (topic?: string) => {
     if (topic) {
@@ -191,7 +203,7 @@ function App() {
           <span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small>
         </a>
         <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
-          {t.nav.map((item, i) => i === 3 ? <button key={item} onClick={() => { window.location.href = `${'/elena-buchelovskaya/'}readings/` }}>{item}<ArrowUpRight size={12}/></button> : <button key={item} onClick={() => scrollTo(['about', 'services', 'daily', '', 'reviews'][i])}>{item}</button>)}
+          {t.nav.map((item, i) => <button key={item} onClick={() => scrollTo(['about', 'services', 'daily', 'spreads', 'reviews'][i])}>{item}</button>)}
         </nav>
         <div className="header-actions">
           <button className="language" onClick={() => setLang(lang === 'ru' ? 'en' : 'ru')} aria-label="Switch language"><Languages size={15}/>{lang.toUpperCase()}</button>
@@ -258,24 +270,40 @@ function App() {
         </section>
 
         
-        <section className="reading-promo section-wrap" id="readings">
-          <div className="reading-promo-art" aria-hidden="true"><span>✧</span><i>☾</i><b>✦</b></div>
-          <div className="reading-promo-copy">
-            <div className="section-kicker"><span>05</span><span>{lang === 'ru' ? 'ИНТЕРАКТИВНОЕ ПРОСТРАНСТВО' : 'INTERACTIVE EXPERIENCE'}</span></div>
-            <h2>{lang === 'ru' ? 'Время обратиться к символам.' : 'A moment with the symbols.'}</h2>
-            <p>{lang === 'ru' ? 'Выберите расклад, сформулируйте вопрос и откройте карты из полной колоды Таро — 78 арканов с подробными трактовками.' : 'Choose a spread, frame your question and draw from the full 78-card Tarot deck with detailed interpretations.'}</p>
-            <a className="button" href={`${'/elena-buchelovskaya/'}readings/`}>{lang === 'ru' ? 'Перейти к раскладам' : 'Explore tarot readings'}<ArrowUpRight size={16}/></a>
+        <section className="spreads-section section-wrap" id="spreads">
+          <div className="section-kicker"><span>05</span><span>{lang === 'ru' ? 'ИНСТРУМЕНТ ДЛЯ РАЗМЫШЛЕНИЯ' : 'A SPACE FOR REFLECTION'}</span></div>
+          <div className="spreads-heading">
+            <div><h2>{lang === 'ru' ? 'Расклад Таро' : 'Tarot readings'}</h2><p>{lang === 'ru' ? 'Выберите количество карт. Каждая карта вытягивается случайно, без повторов в одном раскладе.' : 'Choose how many cards to draw. Cards are selected randomly without repeats in a reading.'}</p></div>
+            <span className="section-mark">✧</span>
           </div>
+          <div className="spread-controls">
+            <div className="spread-sizes" role="group" aria-label={lang === 'ru' ? 'Количество карт' : 'Number of cards'}>
+              {([1, 3, 5] as const).map(size => <button key={size} className={spreadSize === size ? 'spread-size active' : 'spread-size'} onClick={() => { setSpreadSize(size); setSpreadCards([]) }}>{size} <span>{lang === 'ru' ? (size === 1 ? 'карта' : size === 3 ? 'карты' : 'карт') : (size === 1 ? 'card' : 'cards')}</span></button>)}
+            </div>
+            <button className="button" onClick={drawSpread}><Sparkles size={15}/>{lang === 'ru' ? (spreadCards.length ? 'Новый расклад' : 'Вытянуть карты') : (spreadCards.length ? 'New reading' : 'Draw cards')}<ArrowUpRight size={15}/></button>
+          </div>
+          {spreadCards.length > 0 ? <div className={spreadCards.length === 1 ? 'spread-results single' : 'spread-results'}>
+            {spreadCards.map(({card,reversed},index) => <article className="spread-result" key={card.id}>
+              <div className={reversed ? 'spread-card reversed' : 'spread-card'}>
+                <span className="spread-card-index">{String(index + 1).padStart(2,'0')}</span>
+                <span className="spread-card-symbol">{card.symbol}</span>
+                <span className="spread-card-name">{card.name[lang]}</span>
+                <span className="spread-card-arcana">{card.arcana === 'major' ? (lang === 'ru' ? 'СТАРШИЙ АРКАН' : 'MAJOR ARCANA') : (lang === 'ru' ? 'МЛАДШИЙ АРКАН' : 'MINOR ARCANA')}</span>
+              </div>
+              <div className="spread-meaning"><span className="reading-label">{lang === 'ru' ? (reversed ? 'ПЕРЕВЁРНУТОЕ ПОЛОЖЕНИЕ' : 'ПРЯМОЕ ПОЛОЖЕНИЕ') : (reversed ? 'REVERSED POSITION' : 'UPRIGHT POSITION')}</span><h3>{card.name[lang]}</h3><p>{(reversed ? card.reversed : card.upright)[lang]}</p></div>
+            </article>)}
+          </div> : <div className="spread-empty"><span>✧</span><p>{lang === 'ru' ? 'Сосредоточьтесь на своём вопросе и нажмите «Вытянуть карты».' : 'Focus on your question and select “Draw cards”.'}</p></div>}
+          <p className="spread-disclaimer">{lang === 'ru' ? 'Трактовки носят символический характер и предназначены для саморефлексии. Они не предсказывают события и не заменяют профессиональную консультацию.' : 'Interpretations are symbolic prompts for self-reflection. They do not predict events or replace professional advice.'}</p>
         </section>
 
         <section className="reviews-section section-wrap" id="reviews">
-          <div className="section-kicker"><span>06</span><span>{t.reviewsLabel}</span></div>
+          <div className="section-kicker"><span>05</span><span>{t.reviewsLabel}</span></div>
           <div className="reviews-content"><span className="quote-mark">“</span><h2>{t.reviewsTitle}</h2><p>{t.reviewsText}</p><div className="review-placeholder"><span><Star/><Star/><Star/><Star/><Star/></span><small>{lang === 'ru' ? 'МЕСТО ДЛЯ РЕАЛЬНЫХ ОТЗЫВОВ' : 'SPACE FOR VERIFIED TESTIMONIALS'}</small></div></div>
         </section>
 
         <section className="booking-section" id="booking">
           <div className="booking-glow"/>
-          <div className="booking-inner"><div className="section-kicker"><span>07</span><span>{t.bookingLabel}</span></div><h2>{t.bookingTitle}</h2><p>{t.bookingText}</p><button className="button button-light" onClick={() => openBooking()}>{t.bookCta}<ArrowUpRight size={16}/></button></div>
+          <div className="booking-inner"><div className="section-kicker"><span>06</span><span>{t.bookingLabel}</span></div><h2>{t.bookingTitle}</h2><p>{t.bookingText}</p><button className="button button-light" onClick={() => openBooking()}>{t.bookCta}<ArrowUpRight size={16}/></button></div>
           <div className="booking-deco">✳</div>
         </section>
       </main>
