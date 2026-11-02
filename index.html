@@ -9,9 +9,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      #boot-status { position:fixed; inset:0; z-index:99999; min-height:100vh; display:grid; place-items:center; padding:24px; box-sizing:border-box; background:#100b0c; color:#eee5dc; font:16px Manrope,Arial,sans-serif; text-align:center }
+      #boot-status .brand { color:#c5a46d; font-size:12px; letter-spacing:.2em; margin-bottom:14px }
+      #boot-status .detail { color:#c9aaa0; font-size:13px; overflow-wrap:anywhere; margin-top:12px }
+    </style>
+    <script>
+      window.addEventListener('error', function (event) {
+        if (event.target && event.target.tagName === 'SCRIPT') {
+          var status = document.getElementById('boot-status');
+          if (status) status.innerHTML = '<div><div class="brand">ELENA BUCHELOVSKAYA · TAROT</div><b>Не загрузился файл приложения</b><div class="detail">' + (event.target.src || 'Неизвестный JavaScript-файл') + '</div></div>';
+        }
+      }, true);
+    </script>
   </head>
   <body>
-    <div id="boot-status" style="min-height:100vh;display:grid;place-items:center;padding:24px;background:#100b0c;color:#eee5dc;font:16px Manrope,Arial,sans-serif;text-align:center"><div><div style="color:#c5a46d;font-size:12px;letter-spacing:.2em;margin-bottom:14px">ELENA BUCHELOVSKAYA · TAROT</div><div>Загрузка сайта…</div></div></div><div id="root"></div>
+    <div id="boot-status"><div><div class="brand">ELENA BUCHELOVSKAYA · TAROT</div><div>Загрузка сайта…</div></div></div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
