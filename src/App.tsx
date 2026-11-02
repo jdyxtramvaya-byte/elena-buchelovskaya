@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Instagram, Languages, Menu, MessageCircle, Moon, Sparkles, Star, X } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Check, ChevronDown, Languages, Menu, MessageCircle, Sparkles, Star, X } from 'lucide-react'
 
 type Lang = 'ru' | 'en'
 
@@ -214,7 +214,7 @@ function App() {
           <div className="section-kicker"><span>02</span><span>{t.servicesLabel}</span></div>
           <div className="section-heading"><div><h2>{t.servicesTitle}</h2><p>{t.servicesText}</p></div><span className="section-mark">✳</span></div>
           <div className="service-list">
-            {t.items.map((item, i) => <button className="service-row" key={item[0]} onClick={() => openBooking(item[1])}><span className="service-no">{item[0]}</span><span className="service-title">{item[1]}</span><span className="service-desc">{item[2]}</span><span className="service-arrow"><ArrowUpRight size={19}/></span></button>)}
+            {t.items.map((item) => <button className="service-row" key={item[0]} onClick={() => openBooking(item[1])}><span className="service-no">{item[0]}</span><span className="service-title">{item[1]}</span><span className="service-desc">{item[2]}</span><span className="service-arrow"><ArrowUpRight size={19}/></span></button>)}
           </div>
         </section>
 
