@@ -36,10 +36,10 @@ export default function Readings() {
   return <div className="site-shell readings-page">
     <div className="topline"><span>ELENA BUCHELOVSKAYA</span><span>PERSONAL TAROT · {lang === 'ru' ? 'РАСКЛАДЫ' : 'READINGS'}</span><span>EST. IN PRESENCE</span></div>
     <header className="header readings-header">
-      <a className="wordmark" href={import.meta.env.BASE_URL} aria-label="Elena Buchelovskaya home"><span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small></a>
+      <a className="wordmark" href={'/elena-buchelovskaya/'} aria-label="Elena Buchelovskaya home"><span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small></a>
       <div className="reading-header-actions">
         <button className="language" onClick={() => setLang(lang === 'ru' ? 'en' : 'ru')}><Languages size={15}/>{lang.toUpperCase()}</button>
-        <a className="text-link" href={import.meta.env.BASE_URL}><ArrowLeft size={15}/>{copy.back}</a>
+        <a className="text-link" href={'/elena-buchelovskaya/'}><ArrowLeft size={15}/>{copy.back}</a>
       </div>
     </header>
     <main className="readings-main">
@@ -81,6 +81,6 @@ export default function Readings() {
       </section>
       <div className="readings-bottom-note">✧ <span>{copy.note}</span> ✧</div>
     </main>
-    <footer className="footer readings-footer"><a className="wordmark footer-mark" href={import.meta.env.BASE_URL}><span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small></a><div className="footer-center"><span>{lang === 'ru' ? 'Индивидуальные консультации Таро' : 'Personal tarot consultations'}</span><small>© {new Date().getFullYear()} ELENA BUCHELOVSKAYA</small></div><a className="text-link" href={import.meta.env.BASE_URL}><ArrowLeft size={15}/>{copy.back}</a></footer>
+    <footer className="footer readings-footer"><a className="wordmark footer-mark" href={'/elena-buchelovskaya/'}><span>ELENA</span><span>BUCHELOVSKAYA</span><small>T A R O T</small></a><div className="footer-center"><span>{lang === 'ru' ? 'Индивидуальные консультации Таро' : 'Personal tarot consultations'}</span><small>© {new Date().getFullYear()} ELENA BUCHELOVSKAYA</small></div><a className="text-link" href={'/elena-buchelovskaya/'}><ArrowLeft size={15}/>{copy.back}</a></footer>
   </div>
 }
