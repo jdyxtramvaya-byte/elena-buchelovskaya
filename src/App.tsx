@@ -300,23 +300,15 @@ function App() {
             <div><h2>{lang === 'ru' ? 'Расклад Таро' : 'Tarot readings'}</h2><p>{lang === 'ru' ? 'Выберите количество карт. Каждая карта вытягивается случайно, без повторов в одном раскладе.' : 'Choose how many cards to draw. Cards are selected randomly without repeats in a reading.'}</p></div>
             <span className="section-mark">✧</span>
           </div>
-          <div className="spread-controls">
-            <div className="spread-sizes" role="group" aria-label={lang === 'ru' ? 'Количество карт' : 'Number of cards'}>
-              {([1, 3, 5] as const).map(size => <button key={size} className={spreadSize === size ? 'spread-size active' : 'spread-size'} onClick={() => { setSpreadSize(size); setSpreadCards([]) }}>{size} <span>{lang === 'ru' ? (size === 1 ? 'карта' : size === 3 ? 'карты' : 'карт') : (size === 1 ? 'card' : 'cards')}</span></button>)}
+          <div className="reading-promo-inline">
+            <div className="reading-promo-art" aria-hidden="true"><span>✧</span><i>☾</i><b>✦</b></div>
+            <div className="reading-promo-copy">
+              <span className="reading-label">{lang === 'ru' ? 'ОТДЕЛЬНОЕ ПРОСТРАНСТВО ДЛЯ РАСКЛАДА' : 'A DEDICATED READING SPACE'}</span>
+              <h3>{lang === 'ru' ? 'Сосредоточьтесь на своём вопросе.' : 'Focus on your question.'}</h3>
+              <p>{lang === 'ru' ? 'Перемешайте полную колоду из 78 карт, выберите расклад на 1, 3 или 5 карт и откройте значения каждой карты.' : 'Shuffle the full 78-card deck, choose a 1, 3 or 5-card spread and reveal each card meaning.'}</p>
+              <a className="button" href="/elena-buchelovskaya/readings.html">{lang === 'ru' ? 'Перейти к раскладу' : 'Open tarot reading'}<ArrowUpRight size={16}/></a>
             </div>
-            <button className="button" onClick={drawSpread}><Sparkles size={15}/>{lang === 'ru' ? (spreadCards.length ? 'Новый расклад' : 'Вытянуть карты') : (spreadCards.length ? 'New reading' : 'Draw cards')}<ArrowUpRight size={15}/></button>
           </div>
-          {spreadCards.length > 0 ? <div className={spreadCards.length === 1 ? 'spread-results single' : 'spread-results'}>
-            {spreadCards.map(({card,reversed},index) => <article className="spread-result" key={card.id}>
-              <div className={reversed ? 'spread-card reversed' : 'spread-card'}>
-                <span className="spread-card-index">{String(index + 1).padStart(2,'0')}</span>
-                <span className="spread-card-symbol">{card.symbol}</span>
-                <span className="spread-card-name">{card.name[lang]}</span>
-                <span className="spread-card-arcana">{card.arcana === 'major' ? (lang === 'ru' ? 'СТАРШИЙ АРКАН' : 'MAJOR ARCANA') : (lang === 'ru' ? 'МЛАДШИЙ АРКАН' : 'MINOR ARCANA')}</span>
-              </div>
-              <div className="spread-meaning"><span className="reading-label">{lang === 'ru' ? (reversed ? 'ПЕРЕВЁРНУТОЕ ПОЛОЖЕНИЕ' : 'ПРЯМОЕ ПОЛОЖЕНИЕ') : (reversed ? 'REVERSED POSITION' : 'UPRIGHT POSITION')}</span><h3>{card.name[lang]}</h3><p>{(reversed ? card.reversed : card.upright)[lang]}</p></div>
-            </article>)}
-          </div> : <div className="spread-empty"><span>✧</span><p>{lang === 'ru' ? 'Сосредоточьтесь на своём вопросе и нажмите «Вытянуть карты».' : 'Focus on your question and select “Draw cards”.'}</p></div>}
           <p className="spread-disclaimer">{lang === 'ru' ? 'Трактовки носят символический характер и предназначены для саморефлексии. Они не предсказывают события и не заменяют профессиональную консультацию.' : 'Interpretations are symbolic prompts for self-reflection. They do not predict events or replace professional advice.'}</p>
         </section>
 
