@@ -133,8 +133,6 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [cardIndex, setCardIndex] = useState(0)
-  const [spreadSize, setSpreadSize] = useState<1 | 3 | 5>(1)
-  const [spreadCards, setSpreadCards] = useState<{ card: TarotCard; reversed: boolean }[]>([])
   const [form, setForm] = useState({ name: '', contact: '', topicIndex: 0, format: 'online' as 'online' | 'offline', message: '' })
   const [formFeedback, setFormFeedback] = useState('')
   const [libraryQuery, setLibraryQuery] = useState('')
@@ -169,15 +167,6 @@ function App() {
     const matchesQuery = `${card.name.ru} ${card.name.en} ${card.suit || ''}`.toLowerCase().includes(libraryQuery.trim().toLowerCase())
     return matchesQuery && (libraryFilter === 'all' || card.arcana === libraryFilter)
   }), [libraryQuery, libraryFilter])
-
-  const drawSpread = () => {
-    const pool = [...tarotDeck]
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[pool[i], pool[j]] = [pool[j], pool[i]]
-    }
-    setSpreadCards(pool.slice(0, spreadSize).map(card => ({ card, reversed: Math.random() < 0.5 })))
-  }
 
   const openBooking = (topic?: string) => {
     if (topic) {
